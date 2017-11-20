@@ -1,4 +1,4 @@
-# PolyaGamma
+# PolyaGammaDistribution
 
 [![Build Status](https://travis-ci.org/currymj/PolyaGamma.jl.svg?branch=master)](https://travis-ci.org/currymj/PolyaGamma.jl)
 
