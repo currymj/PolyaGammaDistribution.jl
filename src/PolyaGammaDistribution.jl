@@ -4,21 +4,24 @@ using Distributions
 const TRUNC = 0.64
 const cutoff = 1 / TRUNC
 
+# actually b should be integer > 0, c should be Real
 struct PolyaGamma{T<:Real} <: ContinuousUnivariateDistribution
     b::T
     c::T
 end
 
-function Distributions.mean(d::PolyaGamma)
+function Distributions.mean(d::PolyaGamma{T})  where T <: Real
     (d.b / (2.0*d.c)) * tanh(d.c / 2.0)
 end
+function Distributions.rand(d::PolyaGamma{Float64})
+ rpg_devroye(d.c, d.b, 1)[1]
+end
+
 
 # functions from BayesLogit
 
 # cdf of Inverse Gaussian, already helpfully given to us
-function pigauss(x, μ, λ)
-    cdf(InverseGaussian(μ, λ), x)
-end
+pigauss(x, μ, λ) = cdf(InverseGaussian(μ, λ), x)
 
 function rtigauss(z, r=TRUNC)
     tdist = Truncated(InverseGaussian(1/abs(z), 1.0), 0.0, r)
@@ -48,6 +51,8 @@ function acoef(n, x, r=TRUNC)
     end
 end
 
+# this is the sampler you want for a single element,
+# for 1, z
 function rpg_devroye_1(z::Float64)
     z = abs(z) * 0.5
     fz = pi^2 / 8 + z^2 / 2
@@ -123,5 +128,5 @@ function rpg_alt(z, num=1)
     end
 end
 
-export PolyaGamma, mean
+export PolyaGamma
 end # module
