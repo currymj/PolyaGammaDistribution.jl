@@ -48,7 +48,7 @@ function acoef(n, x, r=TRUNC)
     end
 end
 
-function rpg_devroye(z::Float64)
+function rpg_devroye_1(z::Float64)
     z = abs(z) * 0.5
     fz = pi^2 / 8 + z^2 / 2
 
@@ -90,11 +90,26 @@ function rpg_devroye(z::Float64)
     0.25 * x
 end
 
+function rpg_devroye(z=0.0, n=1, num=1)
+
+    x = zeros(num)
+
+    for i=1:num
+        x[i] = 0
+        for j=1:n
+            temp = rpg_devroye_1(z)
+            x[i] = x[i] + temp
+        end
+    end
+    x
+
+end
+
 function rpg_alt(z)
     α = 0.0
     x = 0.0
     while (rand() > α)
-        x = rpg_devroye(0)
+        x = rpg_devroye_1(0)
         α = exp(-0.5 * (z * 0.5)^2 * x)
     end
     x
