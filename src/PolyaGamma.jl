@@ -6,7 +6,7 @@ struct PolyaGammaDistribution{T<:Real} <: ContinuousUnivariateDistribution
     c::T
 end
 
-function mean(d::PolyaGammaDistribution)
+function Distributions.mean(d::PolyaGammaDistribution)
     (d.b / (2.0*d.c)) * tanh(d.c / 2.0)
 end
 # package code goes here
