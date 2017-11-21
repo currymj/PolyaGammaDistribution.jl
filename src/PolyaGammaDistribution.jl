@@ -10,10 +10,10 @@ struct PolyaGamma{T<:Real} <: ContinuousUnivariateDistribution
     c::T
 end
 
-function Distributions.mean(d::PolyaGamma{T})  where T <: Real
+function Base.mean(d::PolyaGamma{T})  where T <: Real
     (d.b / (2.0*d.c)) * tanh(d.c / 2.0)
 end
-function Distributions.rand(d::PolyaGamma{Float64})
+function Base.rand(d::PolyaGamma{Float64})
  rpg_devroye(d.c, d.b, 1)[1]
 end
 
