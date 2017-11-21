@@ -35,9 +35,18 @@ function rtigauss(z, r=TRUNC)
     rand(tdist)
 end
 
-function mass_texpon(z, r=TRUNC)
-    edist = Truncated(Exponential(1), 0.0, r)
-    pdf(edist, z)
+function mass_texpon(z, x=TRUNC)
+    fz = pi^2 / 8 + z^2 / 2
+    b = sqrt(1.0 / x) * (x * z - 1)
+    a = -1.0 * sqrt(1.0 / x) * (x * z + 1)
+
+    x0 = log(fz) + fz * x
+    xb = x0 - z + log(cdf(Normal(0,1), b))
+    xa = x0 + z + log(cdf(Normal(0,1), a))
+
+    qdivp = 4 / pi * (exp(xb) + exp(xa))
+
+    1.0 / (1.0 + qdivp)
 end
 
 function rpg_gammasum(num=1, n=1, z=0.0, trunc=200)
