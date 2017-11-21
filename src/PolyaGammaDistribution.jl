@@ -18,6 +18,13 @@ function Base.rand(d::PolyaGamma)
  rpg_devroye(d.c, d.b, 1)[1]
 end
 
+# https://stats.stackexchange.com/questions/122957/what-is-the-variance-of-a-polya-gamma-distribution
+# thanks to this nerd for saving me the time of doing the derivation
+
+function Base.var(d::PolyaGamma)
+    (d.b / (4 * d.c^3)) * (sinh(d.c) - d.c) * (sech(d.c/2)^2)
+end
+
 # functions from BayesLogit
 
 # cdf of Inverse Gaussian, already helpfully given to us
