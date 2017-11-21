@@ -10,10 +10,11 @@ using Base.Test
 end
 
 @testset begin
+    const tol = 1e-3
     @test abs(mean([PolyaGammaDistribution.rtigauss(1.0) for _ in 1:10000]) - .372498) < .005
-    @test PolyaGammaDistribution.mass_texpon(0.0) ≈ 0.5776972
-    @test PolyaGammaDistribution.mass_texpon(1.0) ≈ 0.4605903
-    @test PolyaGammaDistribution.mass_texpon(2.0) ≈ 0.2305365
+    @test abs(PolyaGammaDistribution.mass_texpon(0.0) - 0.5776972) < tol
+    @test abs(PolyaGammaDistribution.mass_texpon(1.0) - 0.4605903) < tol
+    @test abs(PolyaGammaDistribution.mass_texpon(2.0) - 0.2305365) < tol
 end
 
 @testset begin
