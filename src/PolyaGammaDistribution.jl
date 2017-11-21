@@ -117,11 +117,11 @@ function rpg_devroye(z=0.0, n=1, num=1)
 
 end
 
-function rpg_alt(z)
+function rpg_alt_1(z)
     α = 0.0
     x = 0.0
     while (rand() > α)
-        x = rpg_devroye_1(0)
+        x = rpg_devroye_1(0.0)
         α = exp(-0.5 * (z * 0.5)^2 * x)
     end
     x
@@ -131,8 +131,9 @@ function rpg_alt(z, num=1)
     Z = [z for _ in 1:num]
     x = zeros(Z)
     for i=1:num
-        x[i] = rpg_alt(Z[i])
+        x[i] = rpg_alt_1(Z[i])
     end
+    x
 end
 
 export PolyaGamma
