@@ -9,6 +9,9 @@ using Base.Test
     @test var(PolyaGamma(1.0, 1.0)) ≈ 0.03444664538852302
 end
 
+@testset begin
+    @test abs(mean([PolyaGammaDistribution.rtigauss(1.0) for _ in 1:10000]) - .372498) < .005
+end
 
 @testset begin
     const percent_tol = 0.01
