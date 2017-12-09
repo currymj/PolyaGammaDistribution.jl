@@ -30,9 +30,32 @@ end
 # cdf of Inverse Gaussian, already helpfully given to us
 pigauss(x, μ, λ) = cdf(InverseGaussian(μ, λ), x)
 
-function rtigauss(z, r=TRUNC)
-    tdist = Truncated(InverseGaussian(1/abs(z), 1.0), 0.0, r)
-    rand(tdist)
+function rtigauss(zin, r=TRUNC)
+    z = abs(zin)
+    μ = 1/z
+    x = r + 1
+    if (μ > r)
+        α = 0.0
+        while rand() > α
+            ee = rand(Exponential(1), 2)
+            while ee[1]^2 > (2 * ee[2] / r)
+                ee = rand(Exponential(1), 2)
+            end
+
+            x = r / (1 + r * ee[1])^2
+            α = exp(-0.5 * z^2 * x)
+        end
+    else
+        while x > r
+            λ = 1.0
+            y = rand(Normal())^2
+            x = μ + 0.5*μ^2 / λ * y - 0.5 * μ / λ * sqrt(4 * μ * λ * y + (μ * y)^2)
+            if rand() > (μ/(μ + x))
+                x = μ^2/x
+            end
+        end
+    end
+    x
 end
 
 function mass_texpon(z, x=TRUNC)
