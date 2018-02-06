@@ -5,9 +5,9 @@ const TRUNC = 0.64
 const cutoff = 1 / TRUNC
 
 # actually b should be integer > 0, c should be Real
-struct PolyaGamma{T<:Real} <: ContinuousUnivariateDistribution
+struct PolyaGamma{T<:Integer, U<:Real} <: ContinuousUnivariateDistribution
     b::T
-    c::T
+    c::U
 end
 
 function Distributions.mean(d::PolyaGamma)
