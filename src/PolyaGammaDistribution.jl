@@ -10,18 +10,18 @@ struct PolyaGamma{T<:Real} <: ContinuousUnivariateDistribution
     c::T
 end
 
-function Base.mean(d::PolyaGamma) 
+function Distributions.mean(d::PolyaGamma)
     (d.b / (2.0*d.c)) * tanh(d.c / 2.0)
 end
 
-function Base.rand(d::PolyaGamma)
+function Distributions.rand(d::PolyaGamma)
  rpg_devroye(d.c, d.b, 1)[1]
 end
 
 # https://stats.stackexchange.com/questions/122957/what-is-the-variance-of-a-polya-gamma-distribution
 # thanks to this nerd for saving me the time of doing the derivation
 
-function Base.var(d::PolyaGamma)
+function Distributions.var(d::PolyaGamma)
     (d.b / (4 * d.c^3)) * (sinh(d.c) - d.c) * (sech(d.c/2)^2)
 end
 
@@ -103,14 +103,14 @@ function rpg_devroye_1(z::Float64)
     while true
         numtrials += 1
         if rand() < mass_texpon(z)
-            x = TRUNC + rand(expd) / fz 
+            x = TRUNC + rand(expd) / fz
         else
             x = rtigauss(z)
         end
         s = acoef(0, x)
         y = rand()*s
         n = 0
-        
+
         while true
             n += 1
             totaliter += 1
