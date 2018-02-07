@@ -6,6 +6,8 @@
 
 [![codecov.io](http://codecov.io/github/currymj/PolyaGammaDistribution.jl/coverage.svg?branch=master)](http://codecov.io/github/currymj/PolyaGammaDistribution.jl?branch=master)
 
+[![Build status](https://ci.appveyor.com/api/projects/status/1cbrjw3gotlvps31?svg=true)](https://ci.appveyor.com/project/currymj/polyagammadistribution-jl)
+
 # What is this?
 
 This repository is still under active development, but when it's done it will provide tools for sampling from and computing moments of the Pólya-Gamma distribution, as described in [this paper by Polson et al](http://www.tandfonline.com/doi/abs/10.1080/01621459.2013.829001). They provide the [BayesLogit R package](https://cran.r-project.org/web/packages/BayesLogit/index.html) which my code at the moment essentially copies from, hence the GPL license.
