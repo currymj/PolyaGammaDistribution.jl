@@ -4,12 +4,24 @@ using Distributions
 const TRUNC = 0.64
 const cutoff = 1 / TRUNC
 
-# actually b should be integer > 0, c should be Real
+"""
+A Distribution containing the parameters ``b > 0`` and ``c`` for a Pólya-Gamma
+distribution ``PG(b, c)``. Note that while in general ``b`` can be real,
+samplers implemented here only work for the integral case.
+"""
+
 struct PolyaGamma{T<:Integer, U<:Real} <: ContinuousUnivariateDistribution
     b::T
     c::U
 end
 
+"""
+Analytically computes the mean of the given PG distribution, using the formula:
+
+``
+\frac{b}{2c} \tanh(\frac{c}{2})
+``
+"""
 function Distributions.mean(d::PolyaGamma)
     (d.b / (2.0*d.c)) * tanh(d.c / 2.0)
 end
@@ -21,11 +33,18 @@ end
 # https://stats.stackexchange.com/questions/122957/what-is-the-variance-of-a-polya-gamma-distribution
 # thanks to this nerd for saving me the time of doing the derivation
 
+"""
+Analytically computes the variance of the given PG distribution, using the formula
+
+``
+\frac{b}{4c^3} (\sinh(c) - c) \sech(\frac{c}{2})^2
+``
+"""
 function Distributions.var(d::PolyaGamma)
     (d.b / (4 * d.c^3)) * (sinh(d.c) - d.c) * (sech(d.c/2)^2)
 end
 
-# functions from BayesLogit
+# functions below are essentially translated from the BayesLogit R package
 
 # cdf of Inverse Gaussian, already helpfully given to us
 pigauss(x, μ, λ) = cdf(InverseGaussian(μ, λ), x)
