@@ -25,7 +25,9 @@ end
     analytic_mean = mean(d)
     analytic_var = var(d)
     nsamples = 10^6
+    # standard error of the sample mean
     standard_err = sqrt(analytic_var / nsamples)
+    # standard error of the sample variance
     se_variance = sqrt(2*analytic_var^2/nsamples)
     @test abs(analytic_mean - mean(rand(d, nsamples))) < sigma_tol*standard_err
     @test abs(analytic_var -  var(rand(d, nsamples))) < sigma_tol*se_variance

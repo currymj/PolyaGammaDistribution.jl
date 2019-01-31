@@ -1,9 +1,21 @@
 module PolyaGammaDistribution
 using Distributions
 using Random: AbstractRNG, GLOBAL_RNG, randexp
+using StatsFuns: log1pexp
+using SpecialFunctions: lgamma
 
 const TRUNC = 0.64
 const cutoff = 1 / TRUNC
+const TERMS = 20
+
+"""
+    cosh(x) = (1+e⁻²ˣ)/(2e⁻ˣ)
+    so logcosh(x) = log((1+e⁻²ˣ)) + x - log(2)
+                  = x + log1pexp(-2x) - log(2)
+"""
+function logcosh(x::Real)
+    return x + log1pexp(-2x) - log(2)
+end 
 
 """
 A Distribution containing the parameters ``b > 0`` and ``c`` for a Pólya-Gamma
@@ -14,6 +26,49 @@ struct PolyaGamma{T<:Integer, U<:Real} <: ContinuousUnivariateDistribution
     b::T
     c::U
 end
+
+function jacobi_logpdf(z, x; ntrunc::Int)
+    v = zero(x)
+    for n in 0:ntrunc
+        v += (iseven(n) ? 1 : -1) * acoef(n, x)
+    end
+    return logcosh(z) -x*z^2/2 + log(v)
+end
+
+"""
+    The log coefficients of the infinite sum for the density of PG(b, 0).
+    See Polson et al. 2013, section 2.3.
+"""
+function pg_logcoef(x, b, n)
+    lgamma(n+b)-lgamma(n+1) + log(2n+b) -log(2π * x^3)/2 - (2n+b)^2/8x
+end
+"""
+   log density of the PG(b, 0) distribution.
+    See Polson et al. 2013, section 2.3.
+"""
+function pg0_logpdf(x, b; ntrunc::Int)
+    v = zero(x)
+    for n in 0:ntrunc
+        v += (iseven(n) ? 1 : -1) * exp(pg_logcoef(x, b, n))
+    end
+    return (b-1)*log(2) - lgamma(b) + log(v)
+end
+"""
+    log density of the PG(b, c) distribution.
+    See Polson et al. 2013, section 2.2 and equation (5).
+"""
+function pg_logpdf(b, c, x; ntrunc::Int)
+    b*logcosh(c/2) - x*c^2/2 + pg0_logpdf(x, b; ntrunc=ntrunc)
+end
+
+function Distributions.logpdf(d::PolyaGamma, x::Real; ntrunc::Int=TERMS)
+    if d.b == 1
+        return jacobi_logpdf(d.c/2, 4*x; ntrunc=ntrunc) + log(4)
+    else
+        return pg_logpdf(d.b, d.c, x; ntrunc=ntrunc)
+    end
+end
+Distributions.pdf(d::PolyaGamma, x::Real; ntrunc::Int=TERMS) = exp(Distributions.logpdf(d, x; ntrunc=ntrunc))
 
 """
 Analytically computes the mean of the given PG distribution, using the formula:
