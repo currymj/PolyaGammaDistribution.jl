@@ -9,7 +9,6 @@ A Distribution containing the parameters ``b > 0`` and ``c`` for a Pólya-Gamma
 distribution ``PG(b, c)``. Note that while in general ``b`` can be real,
 samplers implemented here only work for the integral case.
 """
-
 struct PolyaGamma{T<:Integer, U<:Real} <: ContinuousUnivariateDistribution
     b::T
     c::U
@@ -27,7 +26,7 @@ function Distributions.mean(d::PolyaGamma)
 end
 
 function Distributions.rand(d::PolyaGamma)
- rpg_devroye(d.c, d.b, 1)[1]
+    rpg_devroye(d.c, d.b, 1)[1]
 end
 
 # https://stats.stackexchange.com/questions/122957/what-is-the-variance-of-a-polya-gamma-distribution
@@ -37,7 +36,7 @@ end
 Analytically computes the variance of the given PG distribution, using the formula
 
 ``
-\frac{b}{4c^3} (\sinh(c) - c) \sech(\frac{c}{2})^2
+\\frac{b}{4c^3} (\\sinh(c) - c) \\sech(\\frac{c}{2})^2
 ``
 """
 function Distributions.var(d::PolyaGamma)

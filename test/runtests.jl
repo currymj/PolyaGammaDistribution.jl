@@ -1,5 +1,6 @@
 using PolyaGammaDistribution
-using Base.Test
+using Test
+using Distributions: mean, var
 
 # Distributions.jl is willing to have tests that fail with some small probability
 # even when the code is working, so let's just do that here.
@@ -10,7 +11,7 @@ using Base.Test
 end
 
 @testset begin
-    const tol = 1e-3
+    tol = 1e-3
     @test abs(mean([PolyaGammaDistribution.rtigauss(1.0) for _ in 1:10000]) - .372498) < .005
     @test abs(PolyaGammaDistribution.mass_texpon(0.0) - 0.5776972) < tol
     @test abs(PolyaGammaDistribution.mass_texpon(1.0) - 0.4605903) < tol
@@ -18,7 +19,7 @@ end
 end
 
 @testset begin
-    const percent_tol = 0.01
+    percent_tol = 0.01
     analytic_mean = mean(PolyaGamma(1, 1.0))
     analytic_var = var(PolyaGamma(1, 1.0))
     @test abs(analytic_mean - mean(rand(PolyaGamma(1, 1.0), 1000000))) < abs(percent_tol * analytic_mean)
