@@ -84,8 +84,8 @@ function mass_texpon(z, x=TRUNC)
     a = -1.0 * sqrt(1.0 / x) * (x * z + 1)
 
     x0 = log(fz) + fz * x
-    xb = x0 - z + log(cdf(Normal(0,1), b))
-    xa = x0 + z + log(cdf(Normal(0,1), a))
+    xb = x0 - z + logcdf(Normal(0,1), b)
+    xa = x0 + z + logcdf(Normal(0,1), a)
 
     qdivp = 4 / pi * (exp(xb) + exp(xa))
 
