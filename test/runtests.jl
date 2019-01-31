@@ -20,9 +20,13 @@ end
 end
 
 @testset begin
-    percent_tol = 0.01
-    analytic_mean = mean(PolyaGamma(1, 1.0))
-    analytic_var = var(PolyaGamma(1, 1.0))
-    @test abs(analytic_mean - mean(rand(PolyaGamma(1, 1.0), 1000000))) < abs(percent_tol * analytic_mean)
-    @test abs(analytic_var - var(rand(PolyaGamma(1, 1.0), 1000000))) < abs(percent_tol * analytic_var)
+    sigma_tol = 5
+    d = PolyaGamma(1, 1.0)
+    analytic_mean = mean(d)
+    analytic_var = var(d)
+    nsamples = 10^6
+    standard_err = sqrt(analytic_var / nsamples)
+    se_variance = sqrt(2*analytic_var^2/nsamples)
+    @test abs(analytic_mean - mean(rand(d, nsamples))) < sigma_tol*standard_err
+    @test abs(analytic_var -  var(rand(d, nsamples))) < sigma_tol*se_variance
 end
