@@ -1,6 +1,7 @@
 using PolyaGammaDistribution
 using Test
 using Distributions: mean, var
+using Random: GLOBAL_RNG
 
 # Distributions.jl is willing to have tests that fail with some small probability
 # even when the code is working, so let's just do that here.
@@ -12,7 +13,7 @@ end
 
 @testset begin
     tol = 1e-3
-    @test abs(mean([PolyaGammaDistribution.rtigauss(1.0) for _ in 1:10000]) - .372498) < .005
+    @test abs(mean([PolyaGammaDistribution.rtigauss(GLOBAL_RNG, 1.0) for _ in 1:10000]) - .372498) < .005
     @test abs(PolyaGammaDistribution.mass_texpon(0.0) - 0.5776972) < tol
     @test abs(PolyaGammaDistribution.mass_texpon(1.0) - 0.4605903) < tol
     @test abs(PolyaGammaDistribution.mass_texpon(2.0) - 0.2305365) < tol

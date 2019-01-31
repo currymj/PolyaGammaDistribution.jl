@@ -1,5 +1,6 @@
 module PolyaGammaDistribution
 using Distributions
+using Random: AbstractRNG, GLOBAL_RNG, randexp
 
 const TRUNC = 0.64
 const cutoff = 1 / TRUNC
@@ -25,8 +26,9 @@ function Distributions.mean(d::PolyaGamma)
     (d.b / (2.0*d.c)) * tanh(d.c / 2.0)
 end
 
-function Distributions.rand(d::PolyaGamma)
-    rpg_devroye(d.c, d.b, 1)[1]
+Distributions.rand(d::PolyaGamma) = rand(GLOBAL_RNG, d)
+function Distributions.rand(rng::AbstractRNG, d::PolyaGamma)
+    rpg_devroye(rng, d.c, d.b, 1)[1]
 end
 
 # https://stats.stackexchange.com/questions/122957/what-is-the-variance-of-a-polya-gamma-distribution
@@ -48,16 +50,16 @@ end
 # cdf of Inverse Gaussian, already helpfully given to us
 pigauss(x, μ, λ) = cdf(InverseGaussian(μ, λ), x)
 
-function rtigauss(zin, r=TRUNC)
+function rtigauss(rng::AbstractRNG, zin, r=TRUNC)
     z = abs(zin)
     μ = 1/z
     x = r + 1
     if (μ > r)
         α = 0.0
-        while rand() > α
-            ee = rand(Exponential(1), 2)
+        while rand(rng) > α
+            ee = randexp(rng, 2)
             while ee[1]^2 > (2 * ee[2] / r)
-                ee = rand(Exponential(1), 2)
+                ee = randexp(rng, 2)
             end
 
             x = r / (1 + r * ee[1])^2
@@ -66,9 +68,9 @@ function rtigauss(zin, r=TRUNC)
     else
         while x > r
             λ = 1.0
-            y = rand(Normal())^2
+            y = rand(rng, Normal())^2
             x = μ + 0.5*μ^2 / λ * y - 0.5 * μ / λ * sqrt(4 * μ * λ * y + (μ * y)^2)
-            if rand() > (μ/(μ + x))
+            if rand(rng) > (μ/(μ + x))
                 x = μ^2/x
             end
         end
@@ -95,7 +97,7 @@ function rpg_gammasum(num=1, n=1, z=0.0, trunc=200)
     ai = ci + z.^2
     w = zeros(ci)
     for i=1:num
-        w[i] = 2.0 * sum(rand(Gamma(n),trunc)./ai)
+        w[i] = 2.0 * sum(rand(rng, Gamma(n),trunc)./ai)
     end
     w
 end
@@ -110,23 +112,22 @@ end
 
 # this is the sampler you want for a single element,
 # for 1, z
-function rpg_devroye_1(z::Float64)
+function rpg_devroye_1(rng::AbstractRNG, z::Float64)
     z = abs(z) * 0.5
     fz = pi^2 / 8 + z^2 / 2
 
     numtrials = 0
     totaliter = 0
-    expd = Exponential(1)
     x = 0.0
     while true
         numtrials += 1
-        if rand() < mass_texpon(z)
-            x = TRUNC + rand(expd) / fz
+        if rand(rng) < mass_texpon(z)
+            x = TRUNC + randexp(rng) / fz
         else
-            x = rtigauss(z)
+            x = rtigauss(rng, z)
         end
         s = acoef(0, x)
-        y = rand()*s
+        y = rand(rng)*s
         n = 0
 
         while true
@@ -152,14 +153,14 @@ function rpg_devroye_1(z::Float64)
     0.25 * x
 end
 
-function rpg_devroye(z=0.0, n=1, num=1)
+function rpg_devroye(rng::AbstractRNG, z=0.0, n=1, num=1)
 
     x = zeros(num)
 
     for i=1:num
         x[i] = 0
         for j=1:n
-            temp = rpg_devroye_1(z)
+            temp = rpg_devroye_1(rng, z)
             x[i] = x[i] + temp
         end
     end
@@ -167,11 +168,11 @@ function rpg_devroye(z=0.0, n=1, num=1)
 
 end
 
-function rpg_alt_1(z)
+function rpg_alt_1(rng::AbstractRNG, z)
     α = 0.0
     x = 0.0
-    while (rand() > α)
-        x = rpg_devroye_1(0.0)
+    while (rand(rng) > α)
+        x = rpg_devroye_1(rng, 0.0)
         α = exp(-0.5 * (z * 0.5)^2 * x)
     end
     x
