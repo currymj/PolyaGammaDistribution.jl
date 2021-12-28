@@ -1,12 +1,7 @@
 # PolyaGammaDistribution
 
-[![Build Status](https://travis-ci.org/currymj/PolyaGammaDistribution.jl.svg?branch=master)](https://travis-ci.org/currymj/PolyaGammaDistribution.jl)
-
-[![Coverage Status](https://coveralls.io/repos/currymj/PolyaGammaDistribution.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/currymj/PolyaGammaDistribution.jl?branch=master)
-
-[![codecov.io](http://codecov.io/github/currymj/PolyaGammaDistribution.jl/coverage.svg?branch=master)](http://codecov.io/github/currymj/PolyaGammaDistribution.jl?branch=master)
-
-[![Build status](https://ci.appveyor.com/api/projects/status/1cbrjw3gotlvps31?svg=true)](https://ci.appveyor.com/project/currymj/polyagammadistribution-jl)
+[![Build Status](https://github.com/currymj/PolyaGammaDistribution.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/currymj/PolyaGammaDistribution.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![Coverage](https://codecov.io/gh/currymj/PolyaGammaDistribution.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/currymj/PolyaGammaDistribution.jl)
 
 # What is this?
 
